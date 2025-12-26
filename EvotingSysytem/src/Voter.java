@@ -1,5 +1,6 @@
 import exception.EligibilityException;
 import exception.ValidateAgeException;
+import exception.ValidateIdException;
 import exception.ValidatePasswordException;
 
 import java.util.ArrayList;
@@ -19,15 +20,9 @@ public class Voter extends User {
         elections = new ArrayList<>();
     }
 
-    ElectoralOfficer electoralOfficer=ElectoralOfficer.createOfficer();
+    ElectoralOfficer electoralOfficer;
 
-    public String getVotersId() {
-        return votersId;
-    }
 
-    public void setVotersId(String votersId) {
-        this.votersId = votersId;
-    }
 
     public void editProfile(String detail, String update) {
         checkStatus();
@@ -73,19 +68,13 @@ public class Voter extends User {
         }
     }
 
-    public void checkForElection( Election election){
-        for(Election checkElection: elections){
-            if (election != checkElection) {
-                hasVoted = false;
-                break;
-            }
-        }
-    }
+
 
 
     public void  vote(Election election,String password, int choice){
-        electoralOfficer.
+        ElectoralOfficer.createOfficer();
         checkStatus();
+        checkElectionStatus(election);
         checkForElection(election);
         eligibility();
         validatePassword(password);
@@ -93,6 +82,26 @@ public class Voter extends User {
         hasVoted=true;
         election.setVoted(electoralOfficer.findByVoterId(votersId));
         elections.add(election);
+    }
+    public String getVotersId() {
+        return votersId;
+    }
+
+    public void setVotersId(String votersId) {
+        this.votersId = votersId;
+    }
+
+    private void checkForElection( Election election){
+        if (!elections.contains(election)) {
+            hasVoted = false;
+        }
+    }
+
+    private void checkElectionStatus(Election election){
+        if(!election.isElectionStatus()){
+            throw new ValidateIdException("ELECTION HAS NOT STARTED");
+        }
+
     }
 
     private void validatePassword(String password){

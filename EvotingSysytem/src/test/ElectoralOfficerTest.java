@@ -145,9 +145,10 @@ public class ElectoralOfficerTest {
         electoralOfficer.SetFields("adewole","Brown","1234","sabo");
         assertEquals("Brown",electoralOfficer.getUsername());
         electoralOfficer.login("Brown","1234");
-        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
+        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",30);
         Election election= electoralOfficer.createElection("presidential");
         assertNotNull(election);
+        electoralOfficer.registerCandidate(election,voter1.getVotersId());
         electoralOfficer.startElection(election);
         assertNotNull(election.getStartDate());
     }

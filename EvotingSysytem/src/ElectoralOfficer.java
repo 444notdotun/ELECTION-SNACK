@@ -73,10 +73,18 @@ public class ElectoralOfficer extends User {
     }
 
     public void startElection( Election election){
-        if(election==null){
+        if(election==null ||election.getCandidates().isEmpty()){
             throw new OfficerExistException("ELECTION WAS NOT CREATED");
         }
         election.startElection();
+    }
+
+
+    public void stopElection( Election election){
+        if(election==null){
+            throw new OfficerExistException("ELECTION WAS NOT CREATED");
+        }
+        election.stopElection();
     }
 
     public String electionResult(Election election){

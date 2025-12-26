@@ -12,6 +12,8 @@ public class Election {
     private String electionResult;
     private LocalDate startDate;
     private LocalTime  startTime;
+    private LocalDate stopDate;
+    private LocalTime  stopTime;
 
     public Election(String name){
         this.name = name;
@@ -38,6 +40,12 @@ public class Election {
         this.startDate= LocalDate.now();
         this.startTime= LocalTime.now();
         this.electionStatus=true;
+    }
+
+    public void stopElection(){
+        this.stopDate= LocalDate.now();
+        this.stopTime= LocalTime.now();
+        this.electionStatus=false;
     }
 
     public void castVote(int choice){
