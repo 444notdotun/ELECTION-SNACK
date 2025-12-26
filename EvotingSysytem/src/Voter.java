@@ -1,8 +1,12 @@
+import exception.EligibilityException;
 import exception.ValidateAgeException;
+import exception.ValidatePasswordException;
 
 public class Voter extends User {
-    private String VotersId;
+    private String votersId;
     private int age;
+    public boolean hasVoted;
+
 
     public Voter(String username, String password, String name, String address, int age) {
         super(username, password, name, address);
@@ -10,12 +14,13 @@ public class Voter extends User {
         this.age = age;
     }
 
+    ElectoralOfficer electoralOfficer;
     public String getVotersId() {
-        return VotersId;
+        return votersId;
     }
 
     public void setVotersId(String votersId) {
-        VotersId = votersId;
+        this.votersId = votersId;
     }
 
     public void editProfile(String detail, String update) {
@@ -62,6 +67,26 @@ public class Voter extends User {
         }
     }
 
+
+    public void  vote(Election election,String password, int choice){
+        checkStatus();
+        eligibility();
+        validatePassword(password);
+        election.castVote(choice);
+        hasVoted=true;
+        election.setVoted(electoralOfficer.findByVoterId(votersId));
+    }
+
+    private void validatePassword(String password){
+        if(!password.equals(getPassword())){
+            throw new ValidatePasswordException("INVALID PASSWORD");
+        }
+    }
+    private void eligibility(){
+        if(hasVoted){
+            throw new EligibilityException("YOU ALREADY VOTED");
+        }
+    }
 
     public int getAge() {
         return age;

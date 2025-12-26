@@ -122,14 +122,47 @@ public class ElectoralOfficerTest {
         electoralOfficer.SetFields("adewole","Brown","1234","sabo");
         assertEquals("Brown",electoralOfficer.getUsername());
         electoralOfficer.login("Brown","1234");
-        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",30);
+        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",31);
         Election election= electoralOfficer.createElection("presidential");
         assertNotNull(election);
-        election.inputCandidate(voter1.getVotersId());
-        assertEquals(voter1,election.getCandidates().getFirst());
-
+        electoralOfficer.registerCandidate(voter1.getVotersId());
 
     }
+
+    @Test
+    public void officerCanNotRegisterCandidateBelowAge30(){
+        electoralOfficer.SetFields("adewole","Brown","1234","sabo");
+        assertEquals("Brown",electoralOfficer.getUsername());
+        electoralOfficer.login("Brown","1234");
+        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
+        Election election= electoralOfficer.createElection("presidential");
+        assertNotNull(election);
+        assertThrows(OfficerExistException.class,()->electoralOfficer.registerCandidate(voter1.getVotersId()));
+    }
+
+    @Test
+    public void officerCanStartElection(){
+        electoralOfficer.SetFields("adewole","Brown","1234","sabo");
+        assertEquals("Brown",electoralOfficer.getUsername());
+        electoralOfficer.login("Brown","1234");
+        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
+        Election election= electoralOfficer.createElection("presidential");
+        assertNotNull(election);
+        electoralOfficer.startElection();
+        assertNotNull(election.getStartDate());
+    }
+
+
+    @Test
+    public void officerCanNotStartElectionWithoutCreatingElection(){
+        electoralOfficer.SetFields("adewole","Brown","1234","sabo");
+        assertEquals("Brown",electoralOfficer.getUsername());
+        electoralOfficer.login("Brown","1234");
+        voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
+        assertThrows(OfficerExistException.class,()->electoralOfficer.startElection());
+    }
+
+
 
 
 

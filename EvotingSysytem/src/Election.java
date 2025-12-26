@@ -1,7 +1,4 @@
-import exception.OfficerExistException;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +6,8 @@ import java.util.List;
 public class Election {
     private String name;
     private List<Voter> candidates;
-    private List<Voter> eligibleVoters;
     private List<Voter> Voted;
+    private List<Integer> poll;
     private boolean electionStatus;
     private String electionResult;
     private LocalDate startDate;
@@ -19,18 +16,33 @@ public class Election {
     public Election(String name){
         this.name = name;
         candidates=new ArrayList<>();
-        eligibleVoters=new ArrayList<>();
         Voted = new ArrayList<>();
-        this.startDate= LocalDate.now();
-        this.startTime= LocalTime.now();
+        poll = new ArrayList<>();
+
     }
 
-//    public void inputCandidate(String id){
-//       if(electoralOfficer.findByVoterId(id).getAge()>=30) {
-//           candidates.add(electoralOfficer.findByVoterId(id));
-//       }
-//       throw new OfficerExistException("AGE SHOULD BE 30 AND ABOVE TO BE A CANDIDATE");
-//    }
+    public void setCandidate(Voter  candidates) {
+        this.candidates.add(candidates);
+        this.poll.add(0);
+    }
+
+    public void setVoted(Voter voter) {
+        this.Voted.add(voter);
+    }
+
+
+
+
+    public void startElection(){
+        this.startDate= LocalDate.now();
+        this.startTime= LocalTime.now();
+        this.electionStatus=true;
+    }
+
+    public void castVote(int choice){
+       int castingVote = poll.get(choice);
+       poll.add(choice,++castingVote);
+    }
 
     public String getName() {
         return name;
@@ -40,9 +52,6 @@ public class Election {
         return candidates;
     }
 
-    public List<Voter> getEligibleVoters() {
-        return eligibleVoters;
-    }
 
     public List<Voter> getVoted() {
         return Voted;

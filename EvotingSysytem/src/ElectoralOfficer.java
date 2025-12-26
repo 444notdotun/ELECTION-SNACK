@@ -60,8 +60,10 @@ public class ElectoralOfficer extends User {
     }
 
     public void registerCandidate(String id){
-
-        election.inputCandidate(id);
+        if(findByVoterId(id).getAge()<30) {
+            throw new OfficerExistException("AGE SHOULD BE 30 AND ABOVE TO BE A CANDIDATE");
+        }
+        election.setCandidate(findByVoterId(id));
     }
 
     public Election createElection(String name){
@@ -69,12 +71,14 @@ public class ElectoralOfficer extends User {
         return election;
     }
 
-    public void ApproveAndAddCandidate(String id){
+    public void startElection(){
         if(election==null){
-            throw new OfficerExistException("CREATE ELECTION FIRST");
+            throw new OfficerExistException("ELECTION WAS NOT CREATED");
         }
-        election.inputCandidate(id);
+        election.startElection();
     }
+
+
 
 
 
