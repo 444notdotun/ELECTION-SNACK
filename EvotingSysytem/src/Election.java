@@ -30,8 +30,9 @@ public class Election {
         this.Voted.add(voter);
     }
 
-
-
+    public List<Integer> getPoll() {
+        return poll;
+    }
 
     public void startElection(){
         this.startDate= LocalDate.now();
@@ -40,8 +41,17 @@ public class Election {
     }
 
     public void castVote(int choice){
-       int castingVote = poll.get(choice);
-       poll.add(choice,++castingVote);
+       int castingVote = poll.get(choice-1);
+       poll.add(choice-1,++castingVote);
+    }
+
+    public String electionResult(){
+        StringBuilder result = new StringBuilder();
+        for(int i = 0;i<candidates.size();i++){
+            Voter voter = candidates.get(i);
+            result.append(String.format("CANDIDATE NAME==> %s\t VOTES ==> %s%n",voter.getName(),poll.get(i)));
+        }
+        return result.toString();
     }
 
     public String getName() {

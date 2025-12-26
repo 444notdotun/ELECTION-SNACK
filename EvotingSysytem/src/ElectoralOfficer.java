@@ -8,7 +8,7 @@ public class ElectoralOfficer extends User {
     private List<Voter> voters;
     private List<Election> elections;
     private boolean isCreated;
-    Election election;
+
 
     private  ElectoralOfficer( ){
         super("username", "password", "name", "address");
@@ -59,7 +59,7 @@ public class ElectoralOfficer extends User {
         return voters.get(result - 1);
     }
 
-    public void registerCandidate(String id){
+    public void registerCandidate(Election election ,String id){
         if(findByVoterId(id).getAge()<30) {
             throw new OfficerExistException("AGE SHOULD BE 30 AND ABOVE TO BE A CANDIDATE");
         }
@@ -67,15 +67,20 @@ public class ElectoralOfficer extends User {
     }
 
     public Election createElection(String name){
-        election=new Election(name);
+        Election election =new Election(name);
+        elections.add(election);
         return election;
     }
 
-    public void startElection(){
+    public void startElection( Election election){
         if(election==null){
             throw new OfficerExistException("ELECTION WAS NOT CREATED");
         }
         election.startElection();
+    }
+
+    public String electionResult(Election election){
+        return election.electionResult();
     }
 
 

@@ -125,7 +125,7 @@ public class ElectoralOfficerTest {
         voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",31);
         Election election= electoralOfficer.createElection("presidential");
         assertNotNull(election);
-        electoralOfficer.registerCandidate(voter1.getVotersId());
+        electoralOfficer.registerCandidate(election,voter1.getVotersId());
 
     }
 
@@ -137,7 +137,7 @@ public class ElectoralOfficerTest {
         voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
         Election election= electoralOfficer.createElection("presidential");
         assertNotNull(election);
-        assertThrows(OfficerExistException.class,()->electoralOfficer.registerCandidate(voter1.getVotersId()));
+        assertThrows(OfficerExistException.class,()->electoralOfficer.registerCandidate(election,voter1.getVotersId()));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class ElectoralOfficerTest {
         voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
         Election election= electoralOfficer.createElection("presidential");
         assertNotNull(election);
-        electoralOfficer.startElection();
+        electoralOfficer.startElection(election);
         assertNotNull(election.getStartDate());
     }
 
@@ -159,8 +159,10 @@ public class ElectoralOfficerTest {
         assertEquals("Brown",electoralOfficer.getUsername());
         electoralOfficer.login("Brown","1234");
         voter1=electoralOfficer.registerVoter("OLAMIDE ","12345","mide","yaba",20);
-        assertThrows(OfficerExistException.class,()->electoralOfficer.startElection());
+        assertThrows(OfficerExistException.class,()->electoralOfficer.startElection(null));
     }
+
+
 
 
 

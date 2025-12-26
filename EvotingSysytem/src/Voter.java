@@ -2,19 +2,25 @@ import exception.EligibilityException;
 import exception.ValidateAgeException;
 import exception.ValidatePasswordException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Voter extends User {
     private String votersId;
     private int age;
-    public boolean hasVoted;
+    private boolean hasVoted;
+    private List<Election> elections;
 
 
     public Voter(String username, String password, String name, String address, int age) {
         super(username, password, name, address);
         verifyAge(age);
         this.age = age;
+        elections = new ArrayList<>();
     }
 
-    ElectoralOfficer electoralOfficer;
+    ElectoralOfficer electoralOfficer=ElectoralOfficer.createOfficer();
+
     public String getVotersId() {
         return votersId;
     }
@@ -67,14 +73,26 @@ public class Voter extends User {
         }
     }
 
+    public void checkForElection( Election election){
+        for(Election checkElection: elections){
+            if (election != checkElection) {
+                hasVoted = false;
+                break;
+            }
+        }
+    }
+
 
     public void  vote(Election election,String password, int choice){
+        electoralOfficer.
         checkStatus();
+        checkForElection(election);
         eligibility();
         validatePassword(password);
         election.castVote(choice);
         hasVoted=true;
         election.setVoted(electoralOfficer.findByVoterId(votersId));
+        elections.add(election);
     }
 
     private void validatePassword(String password){
@@ -98,7 +116,6 @@ public class Voter extends User {
 
     @Override
     public String toString() {
-          String menu = String.format("NAME -> %s%n ADDRESS ->%s%n AGE -> %d%n",getName(),getAddress(),age);
-          return menu;
+        return String.format("NAME -> %s%n ADDRESS ->%s%n AGE -> %d%n",getName(),getAddress(),age);
     }
 }
