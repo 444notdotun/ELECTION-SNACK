@@ -4,9 +4,10 @@ import lombok.Data;
 
 @Data
 public class TransferRequest {
-private String accountNumber;
-private String password;
-private String bankName;
-private String phoneNumber;
-
+private String receiverAccountNumber;
+private  String receiverBankName;
+private String senderPassword;
+private String senderAccountNumber;
+private  String senderBankName;
+private int amount;
 }

@@ -3,15 +3,11 @@ package bankingapp.services;
 import bankingapp.data.models.Account;
 import bankingapp.data.models.AtmCard;
 import bankingapp.data.models.Bank;
-import bankingapp.data.repository.AccountRepository;
 import bankingapp.data.repository.BankRepository;
 import bankingapp.data.repository.NibbsRepo;
-import bankingapp.dtos.request.CreateAccountRequest;
-import bankingapp.dtos.request.InquireBvnRequest;
-import bankingapp.dtos.request.RequestAtm;
-import bankingapp.dtos.response.CreateAccountResponse;
-import bankingapp.dtos.response.InquireBvnResponse;
-import bankingapp.dtos.response.RequestAtmCardResponse;
+import bankingapp.dtos.request.*;
+import bankingapp.dtos.response.*;
+import bankingapp.exception.AccountValidationException;
 import bankingapp.exception.BankValidationException;
 import bankingapp.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +25,24 @@ public class BankServiceImpl implements BankService{
     @Autowired
     BankRepository bankRepository;
     @Autowired
-    AccountRepository accountRepository;
-    @Autowired
     NibbsService nibbsService;
     @Autowired
     NibbsRepo  nibbsRepo;
+    @Autowired
+    AccountService accountService;
 
     @Override
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) {
         validateBvn(createAccountRequest);
        Account account= Mapper.mapRequestToAccount(createAccountRequest);
         validateBank(createAccountRequest);
+        validateDuplicateAccount(createAccountRequest);
         Optional<Bank> bank = bankRepository.findByBankName(createAccountRequest.getBankName());
         bank.get().setCount(bank.get().getCount()+1);
         account.setBankName(bank.get().getBankName());
         account.setAccountNumber(generateAccountNumber(bank.get()));
         bank.get().getAccounts().put(account.getAccountNumber(), account);
         bankRepository.save(bank.get());
-        accountRepository.save(account);
         return Mapper.mapAccountToResponse(account);
     }
 
@@ -63,13 +59,25 @@ public class BankServiceImpl implements BankService{
         atmCard.setAccount(bankRepository.findByBankName(requestAtm.getBankName()).get().getAccounts().get(requestAtm.getAccountNumber()));
         atmCard.setAtmDigit(generateAtmDigit());
         Bank bank=bankRepository.findByBankName(requestAtm.getBankName()).get();
-        bankRepository.findByBankName(requestAtm.getBankName()).get().getAccounts().get(requestAtm.getAccountNumber()).setAtmCard(atmCard);
-        Account account=accountRepository.findByAccountNumber(requestAtm.getAccountNumber());
-        account.setAtmCard(atmCard);
-        accountRepository.save(account);
+        bank.getAccounts().get(requestAtm.getAccountNumber()).setAtmCard(atmCard);
         bank.getAtmCards().put(atmCard.getAccount().getAccountNumber(), atmCard);
         bankRepository.save(bank);
         return Mapper.mapAtmCardToResponse(atmCard);
+    }
+
+    @Override
+    public DepositResponse deposit(DepositRequest depositRequest) {
+       return accountService.deposit(depositRequest);
+    }
+
+    @Override
+    public WithdrawResponse withdraw(WithdrawRequest withdrawRequest) {
+        return accountService.withdraw(withdrawRequest);
+    }
+
+    @Override
+    public TransferResponse transfer(TransferRequest transferRequest) {
+        return accountService.transfer(transferRequest);
     }
 
     private void validateAccount(RequestAtm requestAtm) {
@@ -95,7 +103,11 @@ public class BankServiceImpl implements BankService{
         }
     }
 
-//    private validate
+  private void validateDuplicateAccount(CreateAccountRequest createAccountRequest){
+        if(bankRepository.findByBankName(createAccountRequest.getBankName()).get().getAccounts().containsValue(createAccountRequest.getPhoneNumber())){
+            throw  new AccountValidationException("account already exist");
+      }
+  }
 
     private String generateAccountNumber(Bank bank) {
         String bankCount =String.format("%09d",bank.getCount());

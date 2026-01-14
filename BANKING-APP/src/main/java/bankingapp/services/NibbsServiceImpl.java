@@ -3,7 +3,9 @@ package bankingapp.services;
 import bankingapp.data.models.Nibbs;
 import bankingapp.data.repository.NibbsRepo;
 import bankingapp.dtos.request.InquireBvnRequest;
+import bankingapp.dtos.request.InterBankRequest;
 import bankingapp.dtos.response.InquireBvnResponse;
+import bankingapp.dtos.response.InterbankResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,11 @@ public class NibbsServiceImpl implements NibbsService {
             return returnBvn(inquireBvnRequest);
         }
         return generateNewBvn(inquireBvnRequest);
+    }
+
+    @Override
+    public InterbankResponse interbank(InterBankRequest interBankRequest) {
+        return null;
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package org.evotingsystem.services;
 
 import org.evotingsystem.data.models.Status;
 import org.evotingsystem.data.models.SuperAdmin;
+import org.evotingsystem.data.repository.SuperAdminRepo;
 import org.evotingsystem.data.repository.VoterRepository;
 import org.evotingsystem.dtos.request.LoginRequest;
 import org.evotingsystem.dtos.request.SignupRequest;
@@ -16,15 +17,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ElectoralOfficerServiceImpl implements ElectoralOfficerService{
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
     @Autowired
     VoterRepository voterRepository;
+    @Autowired
+    SuperAdminRepo superAdminRepo;
 
     @Override
     public SignUpResponse registerVoter(SignupRequest request) {
         verifyAge(request);
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
+//        request.setPassword(passwordEncoder.encode(request.getPassword()));
         voterRepository.save( Mapper.mapRequestToVoter(request));
         SignUpResponse signUpResponse = new SignUpResponse();
         signUpResponse.setMessage("REGISTERED SUCCESSFULLY");
@@ -34,7 +37,7 @@ public class ElectoralOfficerServiceImpl implements ElectoralOfficerService{
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         validateLogin();
-        validatePassword(loginRequest.getPassword());
+//        validatePassword(loginRequest.getPassword());
         SuperAdmin superAdmin= superAdminRepo.findFirstBy();
         superAdmin.setStatus(Status.ACTIVE);
         superAdminRepo.save(superAdmin);

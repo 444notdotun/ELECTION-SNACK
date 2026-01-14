@@ -11,8 +11,6 @@ import java.util.Map;
 @Document
 @Data
 public class Account {
-    @Id
-    private String id;
     private String name;
     private String email;
     private BigDecimal balance;

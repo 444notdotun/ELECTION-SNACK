@@ -1,15 +1,14 @@
 package bankingapp.services;
 
-import bankingapp.dtos.request.CreateAccountRequest;
-import bankingapp.dtos.request.InquireBvnRequest;
-import bankingapp.dtos.request.RequestAtm;
-import bankingapp.dtos.response.CreateAccountResponse;
-import bankingapp.dtos.response.InquireBvnResponse;
-import bankingapp.dtos.response.RequestAtmCardResponse;
+import bankingapp.dtos.request.*;
+import bankingapp.dtos.response.*;
 
 public interface BankService {
 
     CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest);
     InquireBvnResponse inquireUserBvn(InquireBvnRequest inquireBvnRequest);
     RequestAtmCardResponse requestAtmCard(RequestAtm requestAtm);
+    DepositResponse deposit(DepositRequest depositRequest);
+    WithdrawResponse withdraw(WithdrawRequest withdrawRequest);
+    TransferResponse transfer (TransferRequest transferRequest);
 }

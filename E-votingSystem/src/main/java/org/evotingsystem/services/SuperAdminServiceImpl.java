@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 public class SuperAdminServiceImpl implements SuperAdminService{
     @Autowired
     SuperAdminRepo superAdminRepo;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
     @Autowired
     ElectoralOfficerRepository electoralOfficerRepository;
     @Override
@@ -34,7 +34,7 @@ public class SuperAdminServiceImpl implements SuperAdminService{
     @Override
     public UpdateAdminPasswordResponse updateAdminPassword(UpdateAdminPasswordRequest request) {
        validateUpdateAdminPassword(request);
-       request.setNewPassword(passwordEncoder.encode(request.getNewPassword()));
+//       request.setNewPassword(passwordEncoder.encode(request.getNewPassword()));
        SuperAdmin admin = superAdminRepo.findFirstBy();
        admin.setPassword(request.getNewPassword());
        superAdminRepo.save(admin);
@@ -45,7 +45,7 @@ public class SuperAdminServiceImpl implements SuperAdminService{
 
     @Override
     public CreateElectoralOfficerResponse createOfficer(CreateVotingOfficerRequest createVotingOfficerRequest) {
-        createVotingOfficerRequest.setPassword(passwordEncoder.encode(createVotingOfficerRequest.getPassword()));
+//        createVotingOfficerRequest.setPassword(passwordEncoder.encode(createVotingOfficerRequest.getPassword()));
         validateOfficer();
         electoralOfficerRepository.save( Mapper.mapRequestToOfficer(createVotingOfficerRequest));
         CreateElectoralOfficerResponse response = new CreateElectoralOfficerResponse();
@@ -79,20 +79,20 @@ public class SuperAdminServiceImpl implements SuperAdminService{
     private void createAdmin(){
         if(superAdminRepo.count()==0L){
             SuperAdmin superAdmin = new SuperAdmin("superadmin","super@gmail.com","0000");
-            passwordEncoder.encode(superAdmin.getPassword());
-            superAdmin.setPassword(passwordEncoder.encode(superAdmin.getPassword()));
+//            passwordEncoder.encode(superAdmin.getPassword());
+//            superAdmin.setPassword(passwordEncoder.encode(superAdmin.getPassword()));
             superAdminRepo.save(superAdmin);
         }
     }
 
     private void validateUpdateAdminPassword(UpdateAdminPasswordRequest request){
-        if(!passwordEncoder.matches(request.getOldPassword(), superAdminRepo.findFirstBy().getPassword())){
+        if(!superAdminRepo.findFirstBy().getPassword().equals(request.getOldPassword())){
             throw new ValidateAdminException("PASSWORD DOES NOT MATCH");
         }
     }
 
     private void validatePassword(String password){
-        if(!passwordEncoder.matches(password, superAdminRepo.findFirstBy().getPassword())){
+        if(!password.equals(superAdminRepo.findFirstBy().getPassword())){
             throw new ValidateAdminException("PASSWORD DOES NOT MATCH");
         }
     }

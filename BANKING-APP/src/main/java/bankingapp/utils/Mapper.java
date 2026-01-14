@@ -3,14 +3,9 @@ package bankingapp.utils;
 import bankingapp.data.models.Account;
 import bankingapp.data.models.AtmCard;
 import bankingapp.data.models.Transaction;
-import bankingapp.data.repository.BankRepository;
-import bankingapp.dtos.request.CreateAccountRequest;
-import bankingapp.dtos.request.DepositRequest;
-import bankingapp.dtos.request.RequestAtm;
-import bankingapp.dtos.response.CreateAccountResponse;
-import bankingapp.dtos.response.DepositResponse;
-import bankingapp.dtos.response.RequestAtmCardResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import bankingapp.dtos.request.*;
+import bankingapp.dtos.response.*;
+
 
 public class Mapper {
 
@@ -43,5 +38,37 @@ public class Mapper {
         depositResponse.setTransaction(transaction);
         depositResponse.setMessage("success");
         return  depositResponse;
+    }
+
+    public static WithdrawResponse mapWithdrawToResponse(WithdrawRequest withdrawRequest) {
+        Transaction transaction = new Transaction("","-","-",withdrawRequest.getAmount());
+        WithdrawResponse withdrawResponse = new WithdrawResponse();
+        withdrawResponse.setMessage("SUCCESS");
+        withdrawResponse.setTransaction(transaction);
+        return withdrawResponse;
+    }
+
+    public static  WithdrawRequest mapTransferOfSameBankRequestToWithdrawRequest(TransferRequest transferRequest){
+        WithdrawRequest withdrawRequest =  new WithdrawRequest();
+        withdrawRequest.setBankName(transferRequest.getSenderBankName());
+        withdrawRequest.setAmount(transferRequest.getAmount());
+        withdrawRequest.setAccountNumber(transferRequest.getSenderAccountNumber());
+        return withdrawRequest;
+    }
+
+    public static TransferResponse mapTransferOfSameBankResponseToTransferResponse(TransferRequest transferRequest) {
+        TransferResponse transferResponse = new TransferResponse();
+        Transaction transaction = new Transaction("",transferRequest.getSenderAccountNumber(),transferRequest.getReceiverAccountNumber(),transferRequest.getAmount());
+        transferResponse.setMessage("success");
+        transferResponse.setTransaction(transaction);
+        return transferResponse;
+    }
+
+    public static DepositRequest mapTransferOfSameBankResponseToDepositRequest(TransferRequest transferRequest) {
+        DepositRequest depositRequest = new DepositRequest();
+        depositRequest.setBankName(transferRequest.getReceiverBankName());
+        depositRequest.setAccountNumber(transferRequest.getReceiverAccountNumber());
+        depositRequest.setAmount(transferRequest.getAmount());
+        return depositRequest;
     }
 }

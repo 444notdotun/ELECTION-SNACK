@@ -19,8 +19,8 @@ class SuperAdminServiceImplTest {
     SuperAdminService superAdminService;
     @Autowired
     SuperAdminRepo  superAdminRepo;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
 
     UpdateAdminPasswordRequest updateAdminPasswordRequest;
 
