@@ -27,7 +27,6 @@ public class Config implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("======================CONFIG STARTED");
         Cbn cbn = Cbn.getInstance();
         cbnRepo.save(cbn);
         Nibbs nibbs = Nibbs.getInstance();
@@ -35,6 +34,8 @@ public class Config implements CommandLineRunner {
         for(BankDetails details: BankDetails.values()) {
             Bank bank = new Bank(details.getBankcode(),details.name());
             bankRepository.save(bank);
+            cbn.getBanks().put(bank.getBankName(),bank);
+            cbnRepo.save(cbn);
         }
     }
 }

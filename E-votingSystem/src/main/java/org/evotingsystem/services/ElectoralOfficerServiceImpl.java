@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ElectoralOfficerServiceImpl implements ElectoralOfficerService{
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Autowired
     VoterRepository voterRepository;
     @Autowired
@@ -27,7 +27,7 @@ public class ElectoralOfficerServiceImpl implements ElectoralOfficerService{
     @Override
     public SignUpResponse registerVoter(SignupRequest request) {
         verifyAge(request);
-//        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         voterRepository.save( Mapper.mapRequestToVoter(request));
         SignUpResponse signUpResponse = new SignUpResponse();
         signUpResponse.setMessage("REGISTERED SUCCESSFULLY");

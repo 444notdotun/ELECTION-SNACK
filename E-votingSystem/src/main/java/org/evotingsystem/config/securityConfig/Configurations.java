@@ -9,16 +9,16 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-//@Configuration
-//public class Configurations {
+@Configuration
+public class Configurations {
 //    @Bean
 //    public SecurityFilterChain springSecurityFilterChain(HttpSecurity http) throws Exception {
 //        http.csrf(AbstractHttpConfigurer::disable);
 //
 //    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
-//}
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+}

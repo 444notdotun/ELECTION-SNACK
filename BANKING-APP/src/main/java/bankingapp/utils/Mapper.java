@@ -40,13 +40,12 @@ public class Mapper {
         return  depositResponse;
     }
 
-    public static WithdrawResponse mapWithdrawToResponse(WithdrawRequest withdrawRequest) {
-        Transaction transaction = new Transaction("","-","-",withdrawRequest.getAmount());
-        WithdrawResponse withdrawResponse = new WithdrawResponse();
-        withdrawResponse.setMessage("SUCCESS");
-        withdrawResponse.setTransaction(transaction);
-        return withdrawResponse;
-    }
+   public static BalanceResponse mapBalanceToResponse(Account account) {
+        BalanceResponse balanceResponse = new BalanceResponse();
+        balanceResponse.setBalance(String.valueOf(account.getBalance()));
+        balanceResponse.setMessage("success");
+        return balanceResponse;
+   }
 
     public static  WithdrawRequest mapTransferOfSameBankRequestToWithdrawRequest(TransferRequest transferRequest){
         WithdrawRequest withdrawRequest =  new WithdrawRequest();

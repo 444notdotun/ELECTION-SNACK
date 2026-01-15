@@ -4,10 +4,12 @@ import bankingapp.data.models.Account;
 import bankingapp.data.models.Bank;
 import bankingapp.data.repository.BankRepository;
 import bankingapp.data.repository.NibbsRepo;
+import bankingapp.dtos.request.BalanceRequest;
 import bankingapp.dtos.request.DepositRequest;
 
 import bankingapp.dtos.request.TransferRequest;
 import bankingapp.dtos.request.WithdrawRequest;
+import bankingapp.dtos.response.BalanceResponse;
 import bankingapp.dtos.response.DepositResponse;
 import bankingapp.dtos.response.TransferResponse;
 import bankingapp.dtos.response.WithdrawResponse;
@@ -71,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public WithdrawResponse withdraw(WithdrawRequest withdrawRequest) {
-        validateBank(withdrawRequest);
+        validateBank(withdrawRequest.getBankName());
         validateAccount(withdrawRequest);
        Account account=bankRepository.findByBankName(withdrawRequest.getBankName()).get().getAccounts().get(withdrawRequest.getAccountNumber());
        validatePassword(account,withdrawRequest.getPassword());
@@ -82,6 +84,15 @@ public class AccountServiceImpl implements AccountService {
        WithdrawResponse withdrawResponse = new WithdrawResponse();
        bankRepository.save(bank.get());
        return  withdrawResponse;
+    }
+
+    @Override
+    public BalanceResponse getBalance(BalanceRequest balanaceRequest) {
+        validateBank(balanaceRequest.getBankName());
+        validateAccount(balanaceRequest);
+        Account account=bankRepository.findByBankName(balanaceRequest.getBankName()).get().getAccounts().get(balanaceRequest.getAccountNumber());
+        validatePassword(account,balanaceRequest.getPassword());
+        return Mapper.mapBalanceToResponse(account);
     }
 
     private void validateWithdrawal(Account account, int amount){
@@ -107,8 +118,13 @@ public class AccountServiceImpl implements AccountService {
             throw  new AccountValidationException("INVALID ACCOUNT");
         }
     }
-    private void validateBank(WithdrawRequest withdrawRequest) {
-        if(bankRepository.findByBankName(withdrawRequest.getBankName()).isEmpty()){
+    private void validateAccount(BalanceRequest balanceRequest) {
+        if(bankRepository.findByBankName(balanceRequest.getBankName()).get().getAccounts().get(balanceRequest.getAccountNumber()) == null){
+            throw  new AccountValidationException("INVALID ACCOUNT");
+        }
+    }
+    private void validateBank(String bankName) {
+        if(bankRepository.findByBankName(bankName).isEmpty()){
             throw new BankValidationException("INVALID BANK");
         }
     }
